@@ -120,16 +120,12 @@ void repeat_darkrai_encounter(void)
 			{ BT_X, DP_NEUTRAL, SEQ_HOLD, 16 }, /* Close software */
 			{ BT_A, DP_NEUTRAL, SEQ_HOLD, 2 }, /* Confirm close software */
 			{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 64 }, /* Wait for software to close */
-			{ BT_A, DP_NEUTRAL, SEQ_MASH, 32 }, /* Start software, continuing through user selection */
-			{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 666 }, /* Wait for scene */
-			{ BT_A, DP_NEUTRAL, SEQ_HOLD, 2 }, /* Skip opening cutscene */
-			{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 128 }, /* Wait */
-			{ BT_A, DP_NEUTRAL, SEQ_HOLD, 2 }, /* Enter game */
-			{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 284 }, /* Wait for load */
-			{ BT_A, DP_NEUTRAL, SEQ_HOLD, 2 }, /* Encounter Darkrai */
-			{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 181 }, /* Wait for darkrai encounter scene*/
-			{ BT_A, DP_NEUTRAL, SEQ_HOLD, 2 }, /* Close "..." dialog */
-			{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 512 } /* Wait for menu to pop up */
+			{ BT_A, DP_NEUTRAL, SEQ_MASH, 544 }, /* Start software all the way
+																							through encounter, I think only
+																							updates where mashed is counted
+																							in the timer */
+			{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 256 } /* Wait until just after we get a
+																								good look at darkrai */
 		);
 
 		if (interrupted_by_button()) {
