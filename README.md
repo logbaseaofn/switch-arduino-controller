@@ -125,6 +125,18 @@ Flash the `swsh.hex` file, either manually or by running `make flash-swsh`.
 Use any programmer supported by avrdude, `avrdude -c ?`, by specifying
 `PROGRAMMER` when flashing. E.g. `make PROGRAMMER=usbtiny flash-swsh`.
 
+Known issues
+------------
+
+"Press-and-hold" controller inputs are slow on real controllers after using the
+arduino controller. This seems to happen on the Darkrai Hunt BDSP macro
+sometimes. Some symptomes are panes (for example, in the settings menu) will
+not scroll down and when pressing and holding a button the cursor moves
+significantly slower over the options than normal. This can be rememdied by
+connecting a different controller (for example a single joycon), testing that
+it works as expected. Then reconnect the controller that wasn't working. This
+seems to have fixed it each time. A system restart will not do anything.
+
 Factory restore
 ---------------
 
