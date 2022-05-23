@@ -124,7 +124,7 @@ void repeat_darkrai_encounter(void)
 																							through encounter, I think only
 																							updates where mashed is counted
 																							in the timer */
-			{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 256 } /* Wait until just after we get a
+			{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 272 } /* Wait until just after we get a
 																								good look at darkrai */
 		);
 
