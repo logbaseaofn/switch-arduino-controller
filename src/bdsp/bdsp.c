@@ -11,6 +11,7 @@
 static void temporary_control(void);
 static void repeat_shaymin_encounter(void);
 static void repeat_darkrai_encounter(void);
+static void repeat_heatran_encounter(void);
 
 
 int main(void)
@@ -50,6 +51,9 @@ int main(void)
 				break;
 			case 3:
 				repeat_darkrai_encounter();
+				break;
+			case 4:
+				repeat_heatran_encounter();
 				break;
 
 
@@ -125,7 +129,35 @@ void repeat_darkrai_encounter(void)
 																							updates where mashed is counted
 																							in the timer */
 			{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 272 } /* Wait until just after we get a
-																								good look at darkrai */
+																								good look at Darkrai */
+		);
+
+		if (interrupted_by_button()) {
+			return;
+		}
+	}
+}
+
+/*
+ * Macro for encountering Heatran
+ */
+void repeat_heatran_encounter(void)
+{
+	setup_button_automation_interrupt();
+
+	for (;;) {
+		SEND_BUTTON_SEQUENCE(
+			{ BT_H, DP_NEUTRAL, SEQ_HOLD, 2 }, /* Home menu */
+			{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 24 }, /* Wait for main menu to load */
+			{ BT_X, DP_NEUTRAL, SEQ_HOLD, 16 }, /* Close software */
+			{ BT_A, DP_NEUTRAL, SEQ_HOLD, 2 }, /* Confirm close software */
+			{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 64 }, /* Wait for software to close */
+			{ BT_A, DP_NEUTRAL, SEQ_MASH, 544 }, /* Start software all the way
+																							through encounter, I think only
+																							updates where mashed is counted
+																							in the timer */
+			{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 230 } /* Wait until just after we get a
+																								good look at Heatran */
 		);
 
 		if (interrupted_by_button()) {
