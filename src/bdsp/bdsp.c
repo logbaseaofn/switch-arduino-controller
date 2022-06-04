@@ -9,10 +9,15 @@
 
 /* Static functions */
 static void temporary_control(void);
-static void repeat_shaymin_encounter(void);
-static void repeat_darkrai_encounter(void);
-static void repeat_heatran_encounter(void);
+static void shaymin_encounter(void);
+static void darkrai_encounter(void);
+static void heatran_encounter(void);
+static void ramanas_encounter_with_time_reset(void);
 
+// TODO Define the button sequences
+// - generic (heatran, giratina, ramanas park)
+// - darkrai (longer animation than generic)
+// - shaymin (totally different reset method)
 
 int main(void)
 {
@@ -47,13 +52,16 @@ int main(void)
 				temporary_control();
 				break;
 			case 2:
-				repeat_shaymin_encounter();
+				shaymin_encounter();
 				break;
 			case 3:
-				repeat_darkrai_encounter();
+				darkrai_encounter();
 				break;
 			case 4:
-				repeat_heatran_encounter();
+				heatran_encounter();
+				break;
+			case 5:
+				ramanas_encounter_with_time_reset();
 				break;
 
 
@@ -85,7 +93,7 @@ void temporary_control(void)
 /*
  * Macro for encountering Shaymin
  */
-void repeat_shaymin_encounter(void)
+void shaymin_encounter(void)
 {
 	setup_button_automation_interrupt();
 
@@ -113,7 +121,7 @@ void repeat_shaymin_encounter(void)
 /*
  * Macro for encountering Darkrai
  */
-void repeat_darkrai_encounter(void)
+void darkrai_encounter(void)
 {
 	setup_button_automation_interrupt();
 
@@ -140,8 +148,10 @@ void repeat_darkrai_encounter(void)
 
 /*
  * Macro for encountering Heatran
+ *
+ * This timing also works well for Giratina
  */
-void repeat_heatran_encounter(void)
+void heatran_encounter(void)
 {
 	setup_button_automation_interrupt();
 
@@ -166,3 +176,70 @@ void repeat_heatran_encounter(void)
 	}
 }
 
+/**
+ * This function encounters pokemon in Ramanas Park and rolls the time back an
+ * hour approximately every hour. This is to hopefully make colors of
+ * non-shinies consistent
+ */
+// TODO It looks like ramanas always looks like the same background, but the
+// time thing works and would be useful for Shaymin (and maybe Arceus?) going
+// to keep it here for now
+void ramanas_encounter_with_time_reset(void)
+{
+	setup_button_automation_interrupt();
+
+	for (;;) {
+		// The main button sequence takes approximately 57 seconds. For an entire
+		// hour of button sequences, the macro will execute 63.157 times. To avoid
+		// resetting the time such that time runs backwards, it will be 65 times.
+		// This the overshooting, for time to jump 5 hours (enough for the daylight
+		// to change if started at 10AM) this macro must run for at least a week
+		// straight. There is a 7% chance that a shiny won't have been found by
+		// then (and even more unlikely that the user hasn't restarted the
+		// macro/reset the time manually) at this point so I will not be making the
+		// requirements even tighter.
+		for (int i = 0; i < 65; i++) {
+			//SEND_BUTTON_SEQUENCE(
+			//	{ BT_H, DP_NEUTRAL, SEQ_HOLD, 2 }, /* Home menu */
+			//	{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 24 }, /* Wait for main menu to load */
+			//	{ BT_X, DP_NEUTRAL, SEQ_HOLD, 16 }, /* Close software */
+			//	{ BT_A, DP_NEUTRAL, SEQ_HOLD, 2 }, /* Confirm close software */
+			//	{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 64 }, /* Wait for software to close */
+			//	{ BT_A, DP_NEUTRAL, SEQ_MASH, 544 }, /* Start software all the way
+			//																					through encounter, I think only
+			//																					updates where mashed is counted
+			//																					in the timer */
+			//	{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 230 } /* Wait until just after we get a
+			//																						good look at Heatran */
+			//);
+
+			SEND_BUTTON_SEQUENCE(
+				{ BT_H, DP_NEUTRAL, SEQ_HOLD, 2 }, /* Home menu */
+				{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 24 }, /* Wait for main menu to load */
+				{ BT_NONE, DP_BOTTOM, SEQ_HOLD, 2 }, /* Navigate to bubble buttons */
+				{ BT_NONE, DP_RIGHT, SEQ_HOLD, 24 }, /* Navigate to "sleep mode" */
+				{ BT_NONE, DP_LEFT, SEQ_HOLD, 2 }, /* Navigate to "settings" */
+				{ BT_A, DP_NEUTRAL, SEQ_HOLD, 2 }, /* Enter "settings" */
+				{ BT_NONE, DP_BOTTOM, SEQ_HOLD, 64 }, /* Navigate to "System" */
+				{ BT_NONE, DP_RIGHT, SEQ_HOLD, 2 }, /* Make pane active */
+				{ BT_NONE, DP_BOTTOM, SEQ_HOLD, 18 }, /* Navigate to "Date and Time" */
+				{ BT_A, DP_NEUTRAL, SEQ_HOLD, 2 }, /* Enter time and date settings */
+				{ BT_NONE, DP_BOTTOM, SEQ_HOLD, 32 }, /* Navigate to "Date and Time" */
+				{ BT_A, DP_NEUTRAL, SEQ_HOLD, 2 }, /* Enter "Date and Time"*/
+				{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 8 }, /* Wait for date-time form to popup */
+				{ BT_NONE, DP_RIGHT, SEQ_MASH, 3 }, /* Navigate to "Hour" */
+				{ BT_NONE, DP_BOTTOM, SEQ_MASH, 1 }, /* Back an hour */
+				{ BT_A, DP_NEUTRAL, SEQ_MASH, 4 }, /* Accept */
+				{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 8 }, /* Wait */
+				{ BT_H, DP_NEUTRAL, SEQ_HOLD, 2 }, /* Navigate to home menu */
+				{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 32 }, /* Wait for home to load */
+				{ BT_H, DP_NEUTRAL, SEQ_HOLD, 2 }, /* Enter game again */
+				{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 64 } /* Wait for game to load */
+			);
+
+			if (interrupted_by_button()) {
+				return;
+			}
+		}
+	}
+}
