@@ -12,6 +12,7 @@ static void temporary_control(void);
 static void shaymin_encounter(void);
 static void darkrai_encounter(void);
 static void heatran_encounter(void);
+static void long_encounter(void);
 static void ramanas_encounter_with_time_reset(void);
 
 // TODO Define the button sequences
@@ -61,7 +62,7 @@ int main(void)
 				heatran_encounter();
 				break;
 			case 5:
-				ramanas_encounter_with_time_reset();
+				long_encounter();
 				break;
 
 
@@ -168,6 +169,40 @@ void heatran_encounter(void)
 																							in the timer */
 			{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 230 } /* Wait until just after we get a
 																								good look at Heatran */
+		);
+
+		if (interrupted_by_button()) {
+			return;
+		}
+	}
+}
+
+/*
+ * Same as heatran, but it will wait until the pokemon is visible on screen
+ * given the pokemon sent out has no attachment to the player. Intended for Regice.
+ *
+ * This works for all ramanas park pokemon given your lead does not have an
+ * ability. It even works with the long ability animations of Kyogre and
+ * Groudon as well as Regigigas
+ */
+void long_encounter(void)
+{
+	setup_button_automation_interrupt();
+
+	for (;;) {
+		SEND_BUTTON_SEQUENCE(
+			{ BT_H, DP_NEUTRAL, SEQ_HOLD, 2 }, /* Home menu */
+			{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 24 }, /* Wait for main menu to load */
+			{ BT_X, DP_NEUTRAL, SEQ_HOLD, 16 }, /* Close software */
+			{ BT_A, DP_NEUTRAL, SEQ_HOLD, 2 }, /* Confirm close software */
+			{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 64 }, /* Wait for software to close */
+			{ BT_A, DP_NEUTRAL, SEQ_MASH, 544 }, /* Start software all the way
+																							through encounter, I think only
+																							updates where mashed is counted
+																							in the timer */
+			{ BT_NONE, DP_NEUTRAL, SEQ_HOLD, 444 } /* Wait until after battle menu
+																								pops up, with buffering for
+																								possible shiny animation */
 		);
 
 		if (interrupted_by_button()) {
